@@ -3,6 +3,7 @@ package top.colter.mirai.plugin.weibo.draw.component
 import org.jetbrains.skia.Color
 import org.jetbrains.skia.Image
 import top.colter.mirai.plugin.weibo.draw.makeImage
+import top.colter.mirai.plugin.weibo.tools.loadResourceBytes
 import top.colter.skiko.*
 import top.colter.skiko.data.LayoutAlignment
 import top.colter.skiko.layout.Layout
@@ -27,8 +28,8 @@ fun Layout.SmallAuthor(
     require(modifier.height.isNotNull()) { "必须指定高度" }
 
     val badgeImage = when (verify) {
-        0 -> File("src/main/resources/icon/PERSONAL_OFFICIAL_VERIFY.png").readBytes().makeImage()
-        7 -> File("src/main/resources/icon/ORGANIZATION_OFFICIAL_VERIFY.png").readBytes().makeImage()
+        0 -> loadResourceBytes("icon/PERSONAL_OFFICIAL_VERIFY.png")?.makeImage()
+        7 -> loadResourceBytes("icon/ORGANIZATION_OFFICIAL_VERIFY.png")?.makeImage()
         else -> null
     }
 

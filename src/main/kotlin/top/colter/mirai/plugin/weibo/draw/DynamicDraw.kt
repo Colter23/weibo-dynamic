@@ -1,21 +1,35 @@
 package top.colter.mirai.plugin.weibo.draw
 
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.client.j2se.MatrixToImageConfig
+import com.google.zxing.client.j2se.MatrixToImageWriter
+import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.*
 import org.jetbrains.skia.Color
 import org.jetbrains.skia.Image
 import org.jetbrains.skia.paragraph.TextStyle
+import org.jetbrains.skiko.toBitmap
 import top.colter.mirai.plugin.weibo.data.WeiboDynamic
+import top.colter.mirai.plugin.weibo.data.WeiboFullContent
 import top.colter.mirai.plugin.weibo.draw.component.Author
 import top.colter.mirai.plugin.weibo.draw.component.SmallAuthor
 import top.colter.mirai.plugin.weibo.tools.CacheType
 import top.colter.mirai.plugin.weibo.tools.cacheImage
 import top.colter.mirai.plugin.weibo.tools.getOrDownload
+import top.colter.mirai.plugin.weibo.tools.weiboClient
 import top.colter.skiko.*
 import top.colter.skiko.data.RichParagraphBuilder
 import top.colter.skiko.data.Shadow
 import top.colter.skiko.layout.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.coroutines.coroutineContext
 
+
+val formatterOr = DateTimeFormatter.ofPattern("EEE LLL dd HH:mm:ss Z yyyy", Locale.US)
+val formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss")
 
 suspend fun DynamicDraw(dynamic: WeiboDynamic): Image? {
     val draw = WeiboDraw {
@@ -53,13 +67,24 @@ suspend fun Layout.DynamicView(dynamic: WeiboDynamic) {
     val verify = dynamic.user?.verifiedType!!
 
     val name = dynamic.user?.name!!
-    val time = dynamic.createdTime
+
+    val parsedDate = LocalDateTime.parse(dynamic.createdTime, formatterOr)
+    val time = formatter.format(parsedDate)
+
+    var content = dynamic.content
+    val dynamicContent = weiboClient.get<WeiboFullContent>("https://weibo.com/ajax/statuses/longtext?id=${dynamic.id}")
+    if (dynamicContent.data?.longTextContent?.isNotBlank() == true) {
+        content = dynamicContent.data?.longTextContent
+    }
+
+    val shadow = if (containsEnv("forward")) Shadow.ELEVATION_5 else Shadow.ELEVATION_7
 
     Column(modifier = Modifier()
         .fillMaxWidth()
         .padding(20.dp)
         .background(Color.WHITE.withAlpha(0.6f))
         .border(3.dp, 15.dp)
+        .shadows(shadow)
     ) {
 
         if (containsEnv("forward")) {
@@ -77,6 +102,7 @@ suspend fun Layout.DynamicView(dynamic: WeiboDynamic) {
                 verify = verify,
                 name = name,
                 time = time,
+                ornament = qrCode("https://weibo.com/${dynamic.user?.id!!}/${dynamic.id}", 120),
                 modifier = Modifier().fillMaxWidth().height(100.dp).margin(horizontal = (-15).dp, vertical = 10.dp) // .background(Color.RED)
 //                modifier = Modifier().fillMaxWidth().height(100.dp).margin(top = 10.dp, right = (-15).dp, bottom = 30.dp, left = (-15).dp) // .background(Color.RED)
             )
@@ -87,7 +113,7 @@ suspend fun Layout.DynamicView(dynamic: WeiboDynamic) {
 //            val linkStyle = TextStyle().setColor(Color.makeRGB(23, 139, 207)).setFontSize(30.px).setFontFamily(FontUtils.defaultFont!!.familyName)
             val paragraph = RichParagraphBuilder(style)
 
-            paragraph.addText(dynamic.content!!)
+            paragraph.addText(content!!)
 
             RichText(
                 paragraph = paragraph.build(),
@@ -120,4 +146,19 @@ suspend fun Layout.DynamicView(dynamic: WeiboDynamic) {
 
     }
 
+}
+
+fun qrCode(url: String, width: Int): Image {
+    val qrCodeWriter = QRCodeWriter()
+
+    val bitMatrix = qrCodeWriter.encode(
+        url, BarcodeFormat.QR_CODE, width, width,
+        mapOf(
+            EncodeHintType.MARGIN to 0
+        )
+    )
+
+    val config = MatrixToImageConfig(Color.BLACK, Color.makeARGB(0, 255, 255, 255))
+
+    return Image.makeFromBitmap(MatrixToImageWriter.toBufferedImage(bitMatrix, config).toBitmap())
 }

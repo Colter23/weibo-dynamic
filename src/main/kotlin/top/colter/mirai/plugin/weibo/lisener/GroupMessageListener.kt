@@ -13,6 +13,7 @@ import top.colter.mirai.plugin.weibo.WeiboConfig
 import top.colter.mirai.plugin.weibo.data.WeiboDynamic
 import top.colter.mirai.plugin.weibo.data.WeiboFullContent
 import top.colter.mirai.plugin.weibo.draw.DynamicDraw
+import top.colter.mirai.plugin.weibo.draw.formatterOr
 import top.colter.mirai.plugin.weibo.tools.logger
 import top.colter.mirai.plugin.weibo.tools.weiboClient
 import java.time.LocalDateTime
@@ -26,9 +27,6 @@ object GroupMessageListener: SimpleListenerHost() {
         logger.error("MessageEventListener Exception: $exception")
     }
 
-    val formatterOr = DateTimeFormatter.ofPattern("EEE LLL dd HH:mm:ss Z yyyy", Locale.US)
-    val formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss")
-
     @EventHandler
     suspend fun GroupMessageEvent.onMessage() {
 
@@ -37,13 +35,6 @@ object GroupMessageListener: SimpleListenerHost() {
         val msgId = matchingRegular(msg)
         if (msgId != null) {
             val dynamic = weiboClient.get<WeiboDynamic>("https://weibo.com/ajax/statuses/show?id=$msgId")
-            val dynamicContent = weiboClient.get<WeiboFullContent>("https://weibo.com/ajax/statuses/longtext?id=$msgId")
-            if (dynamicContent.data?.longTextContent?.isNotBlank() == true) {
-                dynamic.content = dynamicContent.data?.longTextContent
-            }
-            val parsedDate = LocalDateTime.parse(dynamic.createdTime, formatterOr)
-            dynamic.createdTime = formatter.format(parsedDate)
-
             val image = DynamicDraw(dynamic)
             if (image != null) {
                 subject.sendImage(image.encodeToData()!!.bytes.toExternalResource().toAutoCloseable())

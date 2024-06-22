@@ -19,7 +19,7 @@ public open class WeiboClient(private val timeout: Long = 15_000L): AbstractKtor
         defaultRequest {
             header(HttpHeaders.Origin, "https://weibo.com")
             header(HttpHeaders.Referrer, "https://weibo.com")
-            header(HttpHeaders.Cookie, "SUB=_2A25I3epIDeRhGeNH7FUW8SjLzziIHXVrk2OArDV8PUJbkNB-LWv2kW1NSpVbLaCkaNQr0bUiUA6ZoiwtwIY60lIq;")
+            header(HttpHeaders.Cookie, "XSRF-TOKEN=b82TYw41ZsDxP9eCSMLpJXQG; SUB=_2AkMSuKO7f8NxqwFRmfoTym7mb4V2ygDEieKk5FJgJRMxHRl-yT9kqk0PtRB6OTiNVCfLp484qtKt9KNO1nPmuYtT4Rr4; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9Wh1n55ghnFh1dLcDg5YGITe")
         }
         install(HttpTimeout) {
             socketTimeoutMillis = timeout

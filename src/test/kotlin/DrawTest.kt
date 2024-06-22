@@ -1,9 +1,14 @@
+import io.ktor.client.plugins.cookies.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import org.junit.Before
 import org.junit.Test
 import top.colter.mirai.plugin.weibo.client.WeiboClient
 import top.colter.mirai.plugin.weibo.data.WeiboDynamic
+import top.colter.mirai.plugin.weibo.data.WeiboFullContent
 import top.colter.mirai.plugin.weibo.draw.DynamicDraw
 import top.colter.mirai.plugin.weibo.lisener.GroupMessageListener
 import top.colter.mirai.plugin.weibo.tools.weiboClient
@@ -49,6 +54,24 @@ internal class DrawTest {
 //
 //        val cover = loadTestImage("image", "bg1.jpg")
 
+    }
+
+
+    @Test
+    fun `test dynamic1`(): Unit = runBlocking {
+        val msgId = "O267cpt6p"
+//        val dynamic = weiboClient.get<WeiboDynamic>("https://weibo.com/ajax/statuses/show?id=$msgId")
+        weiboClient.useHttpClient {
+            val aa = it.get("https://weibo.com/6278171447/5007200426660163").setCookie()
+//            println(it.cookies("https://weibo.com/6278171447/5007200426660163"))
+            println(aa)
+            aa.forEach {
+                println("${it.name} ==> ${it.value}")
+            }
+
+        }
+//        val dd = weiboClient.get("https://weibo.com/6278171447/5007200426660163")
+//        weiboClient.cookies("http://0.0.0.0:8080/")
     }
     
 }

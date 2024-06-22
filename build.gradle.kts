@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "top.colter"
-version = "0.1.0"
+version = "0.1.2"
 
 repositories {
     mavenLocal()
@@ -25,8 +25,8 @@ dependencies {
 
     implementation("com.google.zxing:javase:3.5.1")
     implementation("org.jetbrains.kotlinx:atomicfu:0.19.0")
-    api("org.jetbrains.skiko:skiko-awt:0.7.71")
-
+//    api("org.jetbrains.skiko:skiko-awt:0.7.71")
+    implementation("xyz.cssxsh.mirai:mirai-skia-plugin:1.3.2")
     implementation("top.colter.skiko:skiko-layout:0.0.1"){
         exclude("org.jetbrains.skiko:skiko-awt")
     }

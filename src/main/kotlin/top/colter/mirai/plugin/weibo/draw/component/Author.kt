@@ -17,6 +17,7 @@ fun Layout.Author(
     verify: Int = -1,
     name: String,
     time: String,
+    ornament: Image,
     alignment: LayoutAlignment = LayoutAlignment.CENTER,
     modifier: Modifier
 ) = Row (
@@ -71,6 +72,11 @@ fun Layout.Author(
         }
 
     }
+
+    Decorate(
+        image = ornament,
+        modifier = Modifier().height(modifier.height).margin(15.dp)
+    )
 
 }
 

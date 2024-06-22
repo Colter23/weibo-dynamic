@@ -34,7 +34,7 @@ data class ImageConfig(
 @Serializable
 data class LinkResolveConfig(
     val regex: List<String> = listOf(
-        """https?://weibo\.com/\d+/(.+)"""
+        """https?://weibo\.com/\d+/([^?]+)"""
     )
 ){
     val reg: List<Regex> get() = regex.map { it.toRegex() }
