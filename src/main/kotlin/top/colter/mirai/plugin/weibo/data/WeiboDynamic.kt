@@ -16,6 +16,9 @@ data class WeiboDynamic(
     @SerialName("text_raw")
     var content: String? = "",
 
+    @SerialName("url_struct")
+    var urlStruct: List<UrlStruct>? = null,
+
     @SerialName("pic_ids")
     var pics: List<String>? = null,
 
@@ -27,9 +30,11 @@ data class WeiboDynamic(
 )
 
 @Serializable
-data class WeiboUrl(
+data class UrlStruct(
     @SerialName("url_title")
     var urlTitle: String = "",
+    @SerialName("short_url")
+    var shortUrl: String = "",
 )
 
 

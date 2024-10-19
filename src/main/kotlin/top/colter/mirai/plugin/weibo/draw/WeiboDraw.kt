@@ -13,6 +13,7 @@ suspend fun WeiboDraw(draw: suspend Layout.() -> Unit): Image? {
 
     val color = WeiboConfig.imageConfig.defaultColor
     val colors = color.split(";").filter { it != "" }
+    Dp.factor = WeiboConfig.imageConfig.factor
 
     val image = View(
         modifier = Modifier()

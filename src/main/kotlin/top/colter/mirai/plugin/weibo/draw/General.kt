@@ -6,6 +6,7 @@ import org.jetbrains.skia.Image
 import org.jetbrains.skia.Surface
 import org.jetbrains.skia.svg.SVGDOM
 import top.colter.mirai.plugin.weibo.tools.loadResourceBytes
+import java.util.*
 
 
 /**
@@ -63,3 +64,76 @@ fun Color.makeRGB(hex: String): Int {
     }
 }
 
+fun Color.getRGB(color: Int) = intArrayOf(getR(color), getG(color), getB(color))
+
+fun rgb2hsb(rgbR: Int, rgbG: Int, rgbB: Int): FloatArray {
+
+    val rgb = intArrayOf(rgbR, rgbG, rgbB)
+    Arrays.sort(rgb)
+    val max = rgb[2]
+    val min = rgb[0]
+    val hsbB = max / 255.0f
+    val hsbS: Float = if (max == 0) 0f else (max - min) / max.toFloat()
+    var hsbH = 0f
+    if (max == rgbR && rgbG >= rgbB) {
+        hsbH = (rgbG - rgbB) * 60f / (max - min) + 0
+    } else if (max == rgbR && rgbG < rgbB) {
+        hsbH = (rgbG - rgbB) * 60f / (max - min) + 360
+    } else if (max == rgbG) {
+        hsbH = (rgbB - rgbR) * 60f / (max - min) + 120
+    } else if (max == rgbB) {
+        hsbH = (rgbR - rgbG) * 60f / (max - min) + 240
+    }
+    return floatArrayOf(hsbH, hsbS, hsbB)
+}
+
+fun hsb2rgb(h: Float, s: Float, v: Float): IntArray {
+    var r = 0f
+    var g = 0f
+    var b = 0f
+    val i = (h / 60 % 6).toInt()
+    val f = h / 60 - i
+    val p = v * (1 - s)
+    val q = v * (1 - f * s)
+    val t = v * (1 - (1 - f) * s)
+    when (i) {
+        0 -> {
+            r = v
+            g = t
+            b = p
+        }
+
+        1 -> {
+            r = q
+            g = v
+            b = p
+        }
+
+        2 -> {
+            r = p
+            g = v
+            b = t
+        }
+
+        3 -> {
+            r = p
+            g = q
+            b = v
+        }
+
+        4 -> {
+            r = t
+            g = p
+            b = v
+        }
+
+        5 -> {
+            r = v
+            g = p
+            b = q
+        }
+
+        else -> {}
+    }
+    return intArrayOf((r * 255.0).toInt(), (g * 255.0).toInt(), (b * 255.0).toInt())
+}

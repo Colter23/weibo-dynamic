@@ -3,16 +3,24 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.enable
+import net.mamoe.mirai.console.plugin.PluginManager.INSTANCE.load
+import net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import org.junit.Before
 import org.junit.Test
+import top.colter.mirai.plugin.weibo.WeiboDynamicPlugin
 import top.colter.mirai.plugin.weibo.client.WeiboClient
 import top.colter.mirai.plugin.weibo.data.WeiboDynamic
+import top.colter.mirai.plugin.weibo.data.WeiboEmoji
 import top.colter.mirai.plugin.weibo.data.WeiboFullContent
 import top.colter.mirai.plugin.weibo.draw.DynamicDraw
 import top.colter.mirai.plugin.weibo.lisener.GroupMessageListener
+import top.colter.mirai.plugin.weibo.tools.decode
+import top.colter.mirai.plugin.weibo.tools.loadResourceBytes
 import top.colter.mirai.plugin.weibo.tools.weiboClient
 import top.colter.skiko.Dp
+import top.colter.skiko.FontUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -37,7 +45,7 @@ internal class DrawTest {
 
     @Test
     fun `test dynamic`(): Unit = runBlocking {
-        val msgId = "O267cpt6p"
+        val msgId = "OknQ23YC1"
         val dynamic = weiboClient.get<WeiboDynamic>("https://weibo.com/ajax/statuses/show?id=$msgId")
 //        val dd = weiboClient.get<WeiboFullContent>("https://weibo.com/ajax/statuses/longtext?id=$msgId")
 //        println(dynamic)
@@ -47,6 +55,12 @@ internal class DrawTest {
 
     @Test
     fun `test dynamic style1`(): Unit = runBlocking {
+
+        val emoji = loadTestResource("","emoji.json").readText()
+
+        println(emoji.decode<List<WeiboEmoji>>())
+
+
 //        val face = loadTestImage("image", "avatar.jpg")
 //        val pendant = loadTestImage("image", "pendant.png")
 //        val ornament1 = loadTestImage("image", "ornament1.png")
@@ -72,6 +86,12 @@ internal class DrawTest {
         }
 //        val dd = weiboClient.get("https://weibo.com/6278171447/5007200426660163")
 //        weiboClient.cookies("http://0.0.0.0:8080/")
+    }
+
+    @Test
+    fun testtt(): Unit = runBlocking {
+        val rr = "#怎么让全国人民都知道我瘦了30多斤# http://t.cn/A6EpW8TS \u200B\u200B\u200B"
+//        println(rr.)
     }
     
 }

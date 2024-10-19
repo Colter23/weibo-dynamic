@@ -25,7 +25,7 @@ object WeiboDynamicPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "top.colter.weibo-dynamic",
         name = "Weibo Dynamic",
-        version = "0.1.2",
+        version = "1.0.0",
     ) {
         author("Colter")
         dependsOn("xyz.cssxsh.mirai.plugin.mirai-skia-plugin", ">= 1.1.0")
@@ -55,7 +55,7 @@ object WeiboDynamicPlugin : KotlinPlugin(
                 }
             }
 
-//            val msgId = "O7q51ztgb"
+//            val msgId = "OtW24iEkS"
 //            val dynamic = weiboClient.get<WeiboDynamic>("https://weibo.com/ajax/statuses/show?id=$msgId")
 //            DynamicDraw(dynamic)
 
